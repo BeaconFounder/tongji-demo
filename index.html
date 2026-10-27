@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>童跡｜幼兒成長記錄及報告（示範原型）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF2F0; --surface:#FFFFFF; --surface2:#F6F9F8; --ink:#1D2B33; --muted:#5D6B72; --line:#D5DEDB;
+  --brand:#2D5F86; --brand-ink:#FFFFFF; --sun:#F2B632; --sun-soft:#FDF1CF; --ok:#3E9C6E;
+  --paper:#FFFEFA; --paper-ink:#23282B;
+  --d-nature:#3E9C6E; --d-math:#3F6FB5; --d-chinese:#C8463D; --d-physical:#DE8F1F; --d-english:#7A5BB5; --d-arts:#D2468B; --d-social:#2A9DA8;
+  --sans:"Noto Sans TC","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A1E; --surface:#1B252A; --surface2:#212D33; --ink:#E6EEF0; --muted:#9AA9AF; --line:#2F3D44;
+    --brand:#6FA8D6; --brand-ink:#0F1A20; --sun:#F2C255; --sun-soft:#3A3120; --paper:#20292D; --paper-ink:#E8ECEC;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A1E; --surface:#1B252A; --surface2:#212D33; --ink:#E6EEF0; --muted:#9AA9AF; --line:#2F3D44;
+  --brand:#6FA8D6; --brand-ink:#0F1A20; --sun:#F2C255; --sun-soft:#3A3120; --paper:#20292D; --paper-ink:#E8ECEC;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh}
+.logo{display:flex;align-items:center;gap:10px;margin:0 6px 4px}
+.logo-mark{display:flex;gap:3px}
+.logo-mark i{display:block;width:6px;height:26px;border-radius:3px}
+.logo h1{font-size:22px;margin:0;letter-spacing:.04em}
+.logo-sub{font-size:13px;color:var(--muted);margin:0 6px 18px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav button{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:10px 12px;border-radius:10px;font-size:15px;color:var(--muted)}
+.nav button svg{width:20px;height:20px;flex:none}
+.nav button[aria-current="page"]{background:var(--surface2);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--brand)}
+.side-foot{margin-top:auto;font-size:12px;color:var(--muted);padding:10px;border-top:1px solid var(--line)}
+
+main{padding:26px 32px 60px;max-width:1120px;width:100%;min-width:0}
+.grid2>*,.stack>*,.panel,.parent-wrap{min-width:0}
+.demo-banner{background:var(--sun-soft);border:1px solid var(--sun);border-radius:10px;padding:8px 14px;font-size:13.5px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.view-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.view-head h2{font-size:26px;margin:0}
+.view-head p{margin:2px 0 0;color:var(--muted);font-size:14.5px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.panel h3{margin:0 0 12px;font-size:16px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.stack{display:flex;flex-direction:column;gap:18px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+
+/* crayon domain chips */
+.dom{--c:var(--brand)}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-size:14px}
+.chip::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chip[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--surface));font-weight:700}
+.tag{border:1px dashed var(--line);background:var(--surface2);border-radius:8px;padding:5px 10px;font-size:13.5px}
+.tag[aria-pressed="true"]{border-style:solid;border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,var(--surface))}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.kid{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:13.5px;position:relative}
+.kid .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff}
+.kid[aria-pressed="true"]{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand) inset}
+.kid .cnt{position:absolute;top:5px;right:6px;font-size:11px;color:var(--muted)}
+.kid.low .cnt{color:#9A6A00;font-weight:700}
+:root[data-theme="dark"] .kid.low .cnt{color:var(--sun)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .kid.low .cnt{color:var(--sun)}}
+
+.suggest{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sun-soft);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+.suggest button{border:1px solid var(--sun);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:13.5px}
+
+label.field{display:block;font-size:14px;font-weight:700;margin:16px 0 8px}
+textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface2);resize:vertical;line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 16px;font-size:15px;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:700}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn svg{width:18px;height:18px}
+.mic.listening{border-color:var(--d-chinese);color:var(--d-chinese)}
+.mic.listening .dot{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.2}}
+.photo-tile{width:120px;height:86px;border-radius:10px;border:1.5px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-size:13px;background:var(--surface2)}
+.photo-tile.has{border-style:solid;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 30%,var(--surface)),color-mix(in srgb,var(--c) 8%,var(--surface)))}
+
+.feed{display:flex;flex-direction:column;gap:10px}
+.note{border-left:4px solid var(--c);background:var(--surface2);border-radius:0 10px 10px 0;padding:9px 12px;font-size:14px}
+.note .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:3px}
+.note .meta b{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;transition:.25s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* coverage */
+.cov-table{width:100%;border-collapse:collapse;font-size:14px}
+.cov-wrap{overflow-x:auto}
+.cov-table th,.cov-table td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.cov-table th{font-size:12.5px;color:var(--muted);font-weight:500}
+.cell{width:22px;height:22px;border-radius:6px;display:inline-block;background:var(--surface2);border:1px solid var(--line)}
+.bar{height:8px;border-radius:4px;background:var(--surface2);width:140px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bar.low i{background:var(--sun)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat b{font-size:26px;display:block;line-height:1.2}
+.stat span{font-size:13.5px;color:var(--muted)}
+.linkish{border:0;background:none;color:var(--brand);text-decoration:underline;padding:0;font-size:14px}
+
+/* profile */
+.prof-head{display:flex;align-items:center;gap:14px}
+.prof-head .av{width:54px;height:54px;font-size:21px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700}
+select{border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.art-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.art{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface2)}
+.art .canvas{height:110px;display:grid;place-items:center}
+.art p{margin:0;padding:10px 12px;font-size:13.5px}
+.art q{font-family:var(--serif);font-size:15px;display:block;margin-bottom:4px}
+.art q::before{content:"「"}.art q::after{content:"」"}
+
+/* report */
+.rate{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;font-size:14.5px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:5px 11px;font-size:14px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--c);color:#fff;font-weight:700}
+.paper{background:var(--paper);color:var(--paper-ink);border:1px solid var(--line);border-radius:4px;padding:34px 40px;font-family:var(--serif);line-height:1.95;box-shadow:0 2px 0 var(--line),0 10px 30px -18px rgba(0,0,0,.35)}
+.paper h4{font-family:var(--sans);font-size:15px;margin:22px 0 6px;color:var(--brand)}
+.paper h5{font-family:var(--sans);font-size:14.5px;margin:14px 0 4px}
+.paper p{margin:0 0 8px}
+.paper .title{font-family:var(--sans);font-size:20px;font-weight:700;margin:0 0 2px;color:var(--paper-ink)}
+.paper .sub{font-family:var(--sans);font-size:13px;color:var(--muted);margin-bottom:10px}
+.paper [contenteditable]{outline:none;border-radius:4px}
+.paper [contenteditable]:focus{background:color-mix(in srgb,var(--brand) 8%,transparent)}
+mark.flag{background:var(--sun-soft);color:inherit;border-bottom:2px solid var(--sun);padding:0 2px}
+.paper ol{padding-left:22px;margin:4px 0 8px}
+.empty{border:1.5px dashed var(--line);border-radius:12px;padding:40px 24px;text-align:center;color:var(--muted)}
+.thinking{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.thinking i{width:10px;height:10px;border-radius:50%;background:var(--brand);animation:pulse 1s infinite}
+.radar-wrap{display:flex;justify-content:center}
+.legend{font-size:12.5px;color:var(--muted)}
+
+/* guided tour */
+.tour-block{position:fixed;inset:0;z-index:59}
+.tour-ring{position:fixed;border-radius:12px;box-shadow:0 0 0 4px var(--sun),0 0 0 9999px rgba(10,20,25,.55);pointer-events:none;z-index:60;transition:all .2s}
+.tour-ring.center{box-shadow:0 0 0 9999px rgba(10,20,25,.55)}
+.tour-card{position:fixed;z-index:61;width:min(340px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border-radius:14px;padding:16px 18px;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);border:1px solid var(--line)}
+.tour-card h4{margin:0 0 6px;font-size:16.5px}
+.tour-card p{margin:0 0 14px;font-size:14.5px;line-height:1.7}
+.tour-foot{display:flex;align-items:center;gap:8px}
+.tour-foot .step{font-size:12.5px;color:var(--muted);margin-right:auto}
+.tour-foot .btn{padding:6px 12px;font-size:14px}
+.mic .miclabel{white-space:nowrap}
+
+.btn.sm{padding:4px 12px;font-size:13.5px}
+/* login */
+.login{position:fixed;inset:0;z-index:70;background:var(--bg);display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));overflow:auto}
+.login[hidden]{display:none!important}
+.login-card{width:min(780px,100%);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px 28px}
+.login-card h2{margin:14px 0 4px;font-size:26px}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.role{border:1.5px solid var(--line);background:var(--surface2);border-radius:14px;padding:18px 16px;text-align:left;display:flex;flex-direction:column;gap:3px}
+.role:hover{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 6%,var(--surface2))}
+.role b{font-size:19px}
+.role span{font-size:14px}
+.role small{color:var(--muted);font-size:13px;line-height:1.55;margin-top:4px}
+.role-ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;margin-bottom:8px}
+.role-ic svg{width:22px;height:22px}
+.login-note{margin-top:18px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+/* modal */
+.modal-back{position:fixed;inset:0;z-index:65;background:rgba(10,20,25,.55);display:grid;place-items:center;padding:16px}
+.modal-back[hidden]{display:none!important}
+.modal{width:min(540px,100%);background:var(--surface);color:var(--ink);border-radius:16px;padding:20px 22px;border:1px solid var(--line)}
+.modal h3{margin:0 0 4px;font-size:18px}
+/* notes publish */
+.note-act{margin-top:6px;display:flex;justify-content:flex-end}
+.pub-badge{font-size:12.5px;color:var(--ok);font-weight:700}
+.pub-btn{font-size:13px}
+/* parent */
+.parent-wrap{max-width:700px}
+.kid-hero{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+.kid-hero .av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:22px;flex:none}
+.kid-hero h3{margin:0;font-size:20px}
+.moments{display:flex;flex-direction:column;gap:14px}
+.moment{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.moment .ph{height:150px;display:grid;place-items:center;font-size:13px;color:var(--ink);background:linear-gradient(135deg,color-mix(in srgb,var(--c) 38%,var(--surface)),color-mix(in srgb,var(--c) 10%,var(--surface)))}
+.moment .bd{padding:14px 16px}
+.moment .bd p{margin:6px 0 10px;font-family:var(--serif);font-size:16.5px;line-height:1.9}
+.moment .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.thanks[aria-pressed="true"]{border-color:var(--d-arts);color:var(--d-arts);font-weight:700}
+.task{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.task h4{margin:0 0 4px;font-size:16px}
+.task p{margin:0 0 10px;font-size:15px}
+.reply{background:var(--sun-soft);border-radius:10px;padding:8px 12px;font-size:14px;margin-top:8px}
+/* principal */
+.stats4{grid-template-columns:repeat(4,1fr)}
+.flag-chip{display:inline-block;background:var(--sun-soft);border:1px solid var(--sun);border-radius:999px;padding:0 8px;font-size:12px;margin-left:6px}
+.hbar{display:grid;grid-template-columns:100px 1fr 44px;gap:8px;align-items:center;font-size:13.5px;margin-bottom:9px}
+.hbar .t{height:12px;border-radius:6px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.hbar .t i{display:block;height:100%}
+.ev{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px;background:var(--surface2)}
+.ev h4{margin:0 0 4px;font-size:14.5px}
+.ev ul{margin:0;padding-left:18px;font-size:13.5px}
+.row-link{cursor:pointer}
+.row-link:hover td{background:var(--surface2)}
+/* privacy + roadmap */
+.perm{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+.perm th,.perm td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+.perm th{font-size:13px;color:var(--muted);font-weight:500}
+.yes{color:var(--ok);font-weight:700}.no{color:var(--muted)}
+.prot{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.prot div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface2);font-size:13.5px}
+.prot b{display:block;font-size:14.5px;margin-bottom:2px}
+.stage-h{display:flex;align-items:baseline;gap:10px;margin:6px 0 10px}
+.stage-h h3{margin:0;font-size:17px}
+.stage{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:24px}
+.rm{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--surface);border-top:4px solid var(--c)}
+.rm h4{margin:0 0 4px;font-size:15.5px}
+.rm p{margin:0;font-size:13.5px;color:var(--muted)}
+.st{font-size:12px;font-weight:700;border-radius:999px;padding:1px 10px;display:inline-block;border:1px solid var(--line)}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;bottom:0;top:auto;left:0;right:0;height:auto;flex-direction:row;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid var(--line);z-index:40}
+  .logo,.logo-sub,.side-foot{display:none}
+  .nav{flex-direction:row;width:100%;justify-content:space-around;overflow-x:auto}
+  .nav button{flex:0 0 auto;min-width:58px}
+  .roles{grid-template-columns:1fr}
+  .stats4{grid-template-columns:1fr 1fr}
+  .login-card{padding:22px 18px}
+  .nav button{flex-direction:column;gap:2px;font-size:11.5px;padding:6px 8px}
+  .nav button[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--brand)}
+  main{padding:18px 16px 110px}
+  .grid2{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .paper{padding:22px 18px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo">
+      <span class="logo-mark" aria-hidden="true"><i style="background:var(--d-nature)"></i><i style="background:var(--d-math)"></i><i style="background:var(--d-chinese)"></i><i style="background:var(--d-physical)"></i><i style="background:var(--d-english)"></i><i style="background:var(--d-arts)"></i><i style="background:var(--d-social)"></i></span>
+      <h1>童跡</h1>
+    </div>
+    <p class="logo-sub" id="whoami">—</p>
+    <nav class="nav" id="nav" aria-label="主要功能"></nav>
+    <div class="side-foot">2026/27 上學期<br>示範原型，資料均為虛構</div>
+  </aside>
+
+  <main>
+    <div class="demo-banner"><span>示範原型，所有資料均為虛構。目前身份：<b id="roleName">—</b></span><span class="row" style="gap:8px"><button class="btn sm" id="tourBtn" type="button">使用導覽</button><button class="btn sm" id="switchBtn" type="button">切換身份</button></span></div>
+
+    <!-- RECORD -->
+    <section id="v-record">
+      <div class="view-head"><div><h2>今日記錄</h2><p>揀幼兒、揀範疇、講一句，十秒完成。</p></div></div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="suggest" id="suggest"></div>
+          <label class="field" id="lbl-kid">1　選擇幼兒</label>
+          <div class="kids" id="kids" role="group" aria-labelledby="lbl-kid"></div>
+          <label class="field" id="lbl-dom">2　學習範疇</label>
+          <div class="chips" id="doms" role="group" aria-labelledby="lbl-dom"></div>
+          <label class="field" id="lbl-ind">3　觀察到的表現（可選多項）</label>
+          <div class="chips" id="inds" role="group" aria-labelledby="lbl-ind"></div>
+          <label class="field" for="noteText">4　一句觀察或幼兒原話</label>
+          <textarea id="noteText" placeholder="例如：佢見到果皮浮起好興奮，講「果皮會浮，好似船啊」。"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn mic" id="micBtn" type="button"><span class="dot" aria-hidden="true">●</span><span class="miclabel">語音輸入（廣東話）</span></button>
+            <button class="photo-tile dom" id="photoBtn" type="button">＋ 加入相片</button>
+          </div>
+          <div class="row" style="margin-top:16px;justify-content:flex-end">
+            <button class="btn primary" id="saveBtn" type="button">儲存記錄</button>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>最近記錄</h3>
+          <div class="feed" id="recentFeed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COVERAGE -->
+    <section id="v-coverage" hidden>
+      <div class="view-head"><div><h2>K2A 全班概覽</h2><p>確保每位幼兒都有足夠觀察，期末不會「冇料寫」。</p></div></div>
+      <div class="stats" id="stats"></div>
+      <div class="panel">
+        <h3>每位幼兒的記錄（目標：每學期 6 至 8 條）</h3>
+        <div class="cov-wrap"><table class="cov-table" id="covTable"></table></div>
+        <p class="legend" style="margin:10px 0 0">色格代表該範疇已有記錄；黃色條代表記錄偏少，建議本週優先觀察。</p>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="v-profile" hidden>
+      <div class="view-head">
+        <div class="prof-head" id="profHead"></div>
+        <label class="small">切換幼兒　<select id="profSel"></select></label>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h3>學習歷程</h3><div class="feed" id="profFeed"></div><div id="profReplies"></div></div>
+        <div class="stack">
+          <div class="panel"><h3>範疇記錄分佈</h3><div class="radar-wrap" id="profRadar"></div><p class="legend" style="text-align:center;margin:0">按記錄數量顯示，期末評分後改為按等級顯示。</p></div>
+          <div class="panel"><h3>藝術作品及幼兒自述</h3><div class="art-grid" id="profArt"></div><p class="legend" style="margin:10px 0 0">只記錄作品和幼兒自己的說法，系統不會分析畫作代表的情緒。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section id="v-report" hidden>
+      <div class="view-head">
+        <div><h2>學期報告</h2><p>老師評分，系統起草，老師修改及簽發。</p></div>
+        <label class="small">幼兒　<select id="repSel"></select></label>
+      </div>
+      <div class="grid2" style="grid-template-columns:1fr 1.5fr">
+        <div class="stack">
+          <div class="panel">
+            <h3>1　七範疇評分</h3>
+            <p class="small muted" style="margin:-6px 0 10px">4 優秀　3 良好　2 尚待提升　1 需要支援</p>
+            <div class="rate" id="rateBox"></div>
+          </div>
+          <div class="panel">
+            <h3>2　確認重點</h3>
+            <label class="small" style="display:block;margin-bottom:8px">表現良好（兩項）<br>
+              <select id="s1"></select> <select id="s2"></select></label>
+            <label class="small" style="display:block">尚待提升<br><select id="w1"></select></label>
+            <p class="small muted" style="margin:10px 0 0" id="evidenceNote"></p>
+          </div>
+          <div class="panel">
+            <h3>3　起草</h3>
+            <div class="row"><button class="btn primary" id="draftBtn" type="button">AI 起草報告</button><button class="btn" id="stopBtn" type="button" hidden>停止</button></div>
+            <p class="small muted" id="draftStatus" style="margin:10px 0 0">系統只會根據已有記錄撰寫，不會加入記錄以外的事例。</p>
+          </div>
+        </div>
+        <div>
+          <div id="paperWrap"><div class="empty">評分及確認重點後，按「AI 起草報告」。<br>初稿會在這裏出現，你可以直接點擊文字修改。</div></div>
+          <div class="row" style="margin-top:12px;justify-content:flex-end" id="signRow" hidden>
+            <span class="small muted" id="flagCount"></span>
+            <button class="btn primary" id="signBtn" type="button">簽發報告</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARENT -->
+    <section id="v-pfeed" hidden>
+      <div class="view-head"><div><h2>成長點滴</h2><p>老師揀選分享的學習片段。你只會看到自己子女的資料。</p></div></div>
+      <div class="parent-wrap"><div class="kid-hero" id="pHero"></div><div class="moments" id="pFeed"></div></div>
+    </section>
+    <section id="v-preport" hidden>
+      <div class="view-head"><div><h2>學期報告</h2><p>老師簽發後才會在這裏顯示。</p></div></div>
+      <div class="parent-wrap" id="pReport"></div>
+    </section>
+    <section id="v-phome" hidden>
+      <div class="view-head"><div><h2>在家小任務</h2><p>老師按子女的需要建議的親子活動，試過後可以告訴老師。</p></div></div>
+      <div class="parent-wrap" id="pHome"></div>
+    </section>
+
+    <!-- PRINCIPAL -->
+    <section id="v-dash" hidden>
+      <div class="view-head"><div><h2>學校概覽</h2><p>全校各班的記錄、家校溝通及報告進度，可直接作學校自評證據。</p></div><span class="small muted">2026/27 上學期　截至 10 月 26 日</span></div>
+      <div class="stats stats4" id="dStats"></div>
+      <div class="panel" style="margin-bottom:18px">
+        <h3>各班情況</h3>
+        <div class="cov-wrap"><table class="cov-table" id="dClasses"></table></div>
+        <p class="legend" style="margin:10px 0 0">點擊 K2A 可查看班內每位幼兒的記錄情況（示範只提供 K2A 的詳細資料）。黃色標籤代表記錄偏少的幼兒較多，建議跟進。</p>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h3>七個學習範疇的記錄分佈（全校）</h3><div id="dDomains"></div><p class="small" id="dDomainNote" style="margin:10px 0 0"></p></div>
+        <div class="panel"><h3>學校自評證據</h3><p class="small muted" style="margin:-6px 0 10px">對應教育局《表現指標（幼稚園）》的範疇，數字由日常記錄自動整理。</p><div id="dEvidence"></div><button class="btn" id="exportBtn" type="button">匯出自評證據</button></div>
+      </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section id="v-privacy" hidden>
+      <div class="view-head"><div><h2>私隱保護</h2><p>每個身份只可看到所需的資料。</p></div></div>
+      <div class="panel" style="margin-bottom:18px">
+        <h3>誰可以看到甚麼</h3>
+        <div class="cov-wrap"><table class="perm">
+          <thead><tr><th>資料</th><th>家長</th><th>老師</th><th>校長</th><th>辦學團體（正式版）</th></tr></thead>
+          <tbody>
+            <tr><td>老師分享的成長片段、學期報告</td><td class="yes">只限自己子女</td><td class="yes">任教班別</td><td class="yes">全校</td><td class="no">不可</td></tr>
+            <tr><td>老師的原始觀察記錄</td><td class="no">不可</td><td class="yes">任教班別</td><td class="yes">全校</td><td class="no">不可</td></tr>
+            <tr><td>其他幼兒的姓名及資料</td><td class="no">不可</td><td class="yes">任教班別</td><td class="yes">全校</td><td class="no">不可</td></tr>
+            <tr><td>評分及報告草稿</td><td class="no">不可</td><td class="yes">任教班別</td><td class="yes">全校</td><td class="no">不可</td></tr>
+            <tr><td>全校統計及自評證據</td><td class="no">不可</td><td class="no">只限本班數字</td><td class="yes">全校</td><td class="yes">只限匯總數字</td></tr>
+            <tr><td>家長的回應</td><td class="yes">只限自己</td><td class="yes">任教班別</td><td class="yes">全校</td><td class="no">不可</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="panel">
+        <h3>正式版的保護措施</h3>
+        <div class="prot">
+          <div><b>邀請制帳戶</b>由學校建立老師及家長帳戶，不設公開登記。</div>
+          <div><b>雙重驗證登入</b>密碼加手機短訊驗證碼。</div>
+          <div><b>老師把關</b>原始記錄不會自動傳給家長，必須由老師揀選及確認。</div>
+          <div><b>相片保護</b>家長看到的相片會自動遮蓋其他幼兒的面孔。</div>
+          <div><b>使用記錄</b>記錄誰在何時查看或修改了哪項資料。</div>
+          <div><b>香港數據中心</b>資料存放在香港，不會用作訓練AI模型。</div>
+          <div><b>家長同意</b>開始記錄前取得家長書面同意，可隨時退出。</div>
+          <div><b>資料保存期限</b>幼兒離校後按學校政策刪除，家長可下載完整記錄。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="v-roadmap" hidden>
+      <div class="view-head"><div><h2>發展藍圖</h2><p>由幼稚園試點開始，逐步加入加值模組，再擴展至小學。</p></div></div>
+      <div id="roadmapBody"></div>
+    </section>
+  </main>
+</div>
+<div class="login" id="login" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="login-card">
+    <div class="logo" style="margin:0"><span class="logo-mark" aria-hidden="true"><i style="background:var(--d-nature)"></i><i style="background:var(--d-math)"></i><i style="background:var(--d-chinese)"></i><i style="background:var(--d-physical)"></i><i style="background:var(--d-english)"></i><i style="background:var(--d-arts)"></i><i style="background:var(--d-social)"></i></span><h1>童跡</h1></div>
+    <h2 id="loginTitle">選擇身份登入</h2>
+    <p class="muted" style="margin:0">示範版：選擇身份即可進入，可隨時按「切換身份」比較不同身份看到的內容。</p>
+    <div class="roles">
+      <button class="role" data-role="teacher" type="button"><span class="role-ic" style="background:var(--d-math)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><b>老師</b><span>陳老師　K2A 班</span><small>記錄觀察、查看全班、起草及簽發報告、揀選片段分享給家長</small></button>
+      <button class="role" data-role="principal" type="button"><span class="role-ic" style="background:var(--d-nature)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-5h4v5"/></svg></span><b>校長</b><span>李校長　全校</span><small>查看全校各班情況、報告進度及學校自評證據</small></button>
+      <button class="role" data-role="parent" type="button"><span class="role-ic" style="background:var(--d-arts)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><b>家長</b><span>黃子朗的家長</span><small>只會看到自己子女的成長片段、學期報告及在家小任務</small></button>
+    </div>
+    <p class="login-note">正式版：帳戶由學校發出邀請建立，以密碼加手機短訊驗證登入，不設公開登記。</p>
+  </div>
+</div>
+<div class="modal-back" id="pubModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pubTitle">
+    <h3 id="pubTitle">分享給家長</h3>
+    <p class="small muted" style="margin:0 0 10px">家長只會看到以下文字及相片，你的原始記錄不會分享出去。</p>
+    <textarea id="pubText"></textarea>
+    <div class="row" style="margin-top:12px"><button class="btn" id="pubAI" type="button">AI 改寫成家長版</button><span style="flex:1"></span><button class="btn" id="pubCancel" type="button">取消</button><button class="btn primary" id="pubOk" type="button">確認分享</button></div>
+    <p class="small muted" id="pubStatus" style="margin:8px 0 0"></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+window.addEventListener("error",function(e){var b=document.querySelector(".demo-banner");if(b){b.textContent="載入出錯："+(e.message||"未知錯誤")+"。請截圖給開發人員。";b.style.borderColor="#C8463D";}});
+</script>
+<script>
+const DOMAINS = [
+  {id:"nature",  name:"大自然與生活", ind:["主動觀察","提出問題","動手探究","聯繫生活經驗"]},
+  {id:"math",    name:"幼兒數學",     ind:["點數準確","量度及比較","認識圖形","解釋做法"]},
+  {id:"chinese", name:"語文",         ind:["聆聽理解","表達清晰","認讀字詞","需要提示"]},
+  {id:"physical",name:"體能與健康",   ind:["大肌肉協調","小肌肉控制","自理能力","安全意識"]},
+  {id:"english", name:"英國語文",     ind:["模仿發音","運用詞彙","聽從指示","主動參與"]},
+  {id:"arts",    name:"藝術與創意",   ind:["運用不同媒介","表達想法","專注創作","願意分享作品"]},
+  {id:"social",  name:"個人與群體",   ind:["遵守規則","主動關心同伴","合作分享","情緒表達"]},
+];
+const DMAP = Object.fromEntries(DOMAINS.map(d=>[d.id,d]));
+const cvar = id => `var(--d-${id})`;
+const AVC = ["#3F6FB5","#3E9C6E","#C8463D","#DE8F1F","#7A5BB5","#D2468B","#2A9DA8","#5B6C7A"];
+
+const NAMES = ["黃子朗","陳樂晴","李俊熙","張心悅","梁浩然","何詠琳","林卓希","吳思朗","鄭芷晴","劉梓軒","蔡安琪","周天佑","謝曉彤","馮家樂","許穎欣","曾子謙","葉朗宜","蘇凱晴","盧俊言","鍾希彤","羅子軒","潘悅晞","郭樂然","彭芊妤"];
+const kids = NAMES.map((n,i)=>({id:"k"+i,name:n,color:AVC[i%AVC.length]}));
+
+let nid=0;
+const notes = [];
+function addNote(o){ notes.push({id:"n"+(nid++), photo:false, tags:[], ...o}); }
+
+// Featured child, mirroring the sample report
+[
+ {kid:"k0",date:"2026-09-25",dom:"nature",tags:["主動觀察","動手探究","聯繫生活經驗"],photo:true,text:"中秋柚子活動，分得出果肉、果皮、果核。自選時間自己逐樣放落水睇浮定沉，見到果皮浮起好興奮，講「果皮會浮，好似船啊」。"},
+ {kid:"k0",date:"2026-10-09",dom:"math",tags:["量度及比較","點數準確"],photo:true,text:"量度小組，用積木量鉛筆同擦膠，排得密，冇空隙冇重疊。鉛筆5粒、擦膠2粒。問邊個長，即刻指住鉛筆講「呢個長啲」。"},
+ {kid:"k0",date:"2026-10-02",dom:"arts",tags:["運用不同媒介","表達想法"],photo:true,text:"用水彩畫中秋燈籠，畫完主動解釋：「呢個係兔仔燈籠，佢識飛去月光度。」"},
+ {kid:"k0",date:"2026-10-14",dom:"english",tags:["模仿發音","運用詞彙"],text:"英文堂主動跟老師讀，遊戲時會用返 apple、red 等學過嘅詞。"},
+ {kid:"k0",date:"2026-10-16",dom:"chinese",tags:["需要提示"],photo:true,text:"蜜蜂主題識字，拼圖配字卡好猶豫，「蜜蜂」同「花蜜」成日撈亂，要逐步提示先完成。"},
+ {kid:"k0",date:"2026-10-20",dom:"social",tags:["遵守規則"],text:"排隊守規矩，但較少主動關心同學，小組時多數等同學先開口。"},
+ {kid:"k0",date:"2026-10-21",dom:"physical",tags:["大肌肉協調","自理能力"],text:"平衡木行得穩，換衫時識自己扣鈕。"},
+].forEach(addNote);
+
+const GENERIC = {
+  nature:["種豆活動每日主動去睇有冇發芽，會話「今日高咗少少」。","落雨後喺操場搵蝸牛，會數有幾多隻。"],
+  math:["分糖果時逐粒點數，點到十冇錯。","砌圖形時講得出「三角形有三隻角」。"],
+  chinese:["講故事時坐得定，聽完答到主角係邊個。","分享時間用完整句子講周末去咗公園。"],
+  physical:["拋接豆袋接得穩，連續接到五次。","剪紙沿住線剪，手部控制幾好。"],
+  english:["唱 good morning song 跟得上節拍。","識講 thank you，會主動用。"],
+  arts:["用黏土整咗一隻狗仔，話「佢叫波波」。","畫畫用好多顏色，話畫緊屋企。"],
+  social:["同學唔夠膠擦，主動借俾佢。","玩遊戲輸咗有少少唔開心，老師安慰後好快平復。"],
+};
+const counts=[7,4,6,2,5,3,6,1,4,5,2,6,3,4,5,1,6,4,3,5,2,4,6,3];
+kids.forEach((k,i)=>{ if(i===0) return;
+  const ids=Object.keys(GENERIC);
+  for(let j=0;j<counts[i];j++){
+    const d=ids[(i*3+j*2)%ids.length];
+    const day=8+((i*5+j*7)%44); const m=day>30?10:9; const dd=day>30?day-30:day;
+    addNote({kid:k.id,date:`2026-${String(m).padStart(2,"0")}-${String(dd).padStart(2,"0")}`,dom:d,tags:[DMAP[d].ind[(i+j)%4]],text:GENERIC[d][(i+j)%2],photo:(i+j)%3===0});
+  }
+});
+
+const kidNotes = id => notes.filter(n=>n.kid===id).sort((a,b)=>b.date.localeCompare(a.date));
+const LOW = 3;
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate = d => { const [,m,dd]=d.split("-"); return `${+m}月${+dd}日`; };
+const toast = msg => { const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2200); };
+
+/* ---------- roles & navigation ---------- */
+const IC={
+ record:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+ coverage:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+ profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+ report:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>',
+ pfeed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+ phome:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+ dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+ privacy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+ roadmap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',
+};
+IC.preport=IC.report;
+const ROLES={
+ teacher:{name:"老師（陳老師）",who:"K2A 班　陳老師",home:"record",nav:[["record","記錄"],["coverage","全班概覽"],["profile","幼兒檔案"],["report","學期報告"],["privacy","私隱保護"],["roadmap","發展藍圖"]]},
+ principal:{name:"校長（李校長）",who:"李校長　全校",home:"dash",nav:[["dash","學校概覽"],["coverage","K2A 詳情"],["profile","幼兒檔案"],["privacy","私隱保護"],["roadmap","發展藍圖"]]},
+ parent:{name:"家長（黃子朗）",who:"黃子朗的家長",home:"pfeed",nav:[["pfeed","成長點滴"],["preport","學期報告"],["phome","在家小任務"],["privacy","私隱保護"]]},
+};
+const ALLVIEWS=["record","coverage","profile","report","pfeed","preport","phome","dash","privacy","roadmap"];
+let role=null;
+function renderNav(){
+  const nav=document.getElementById("nav"); nav.innerHTML="";
+  ROLES[role].nav.forEach(([v,label])=>{ const b=document.createElement("button"); b.type="button"; b.dataset.view=v; b.innerHTML=IC[v]+label; b.onclick=()=>show(v); nav.appendChild(b); });
+}
+function show(v){
+  if(role && !ROLES[role].nav.some(x=>x[0]===v)) v=ROLES[role].home;
+  ALLVIEWS.forEach(x=>document.getElementById("v-"+x).hidden = x!==v);
+  document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.view===v?"page":"false"));
+  const fn={coverage:renderCoverage,profile:renderProfile,report:renderReportSetup,pfeed:renderPFeed,preport:renderPReport,phome:renderPHome,dash:renderDash,roadmap:renderRoadmap}[v];
+  if(fn) fn();
+  window.scrollTo(0,0);
+}
+function login(r){
+  role=r;
+  document.getElementById("login").hidden=true;
+  document.getElementById("whoami").textContent=ROLES[r].who;
+  document.getElementById("roleName").textContent=ROLES[r].name;
+  document.getElementById("tourBtn").hidden = r!=="teacher";
+  renderNav(); renderRecent(); show(ROLES[r].home);
+  if(r==="teacher"){ let seen=false; try{ seen=localStorage.getItem("tongji-tour-done")==="1"; }catch(e){} if(!seen) setTimeout(tourStart,400); }
+}
+document.querySelectorAll(".role").forEach(b=>b.onclick=()=>login(b.dataset.role));
+document.getElementById("switchBtn").onclick=()=>{ if(typeof tourEnd==="function" && tourEls) tourEnd(); document.getElementById("login").hidden=false; };
+
+/* ---------- record ---------- */
+const rec={kid:null,dom:null,tags:new Set(),photo:false};
+function renderKids(){
+  const box=document.getElementById("kids"); box.innerHTML="";
+  kids.forEach(k=>{
+    const n=kidNotes(k.id).length;
+    const b=document.createElement("button"); b.type="button";
+    b.className="kid"+(n<LOW?" low":""); b.setAttribute("aria-pressed",rec.kid===k.id);
+    b.innerHTML=`<span class="cnt">${n}</span><span class="av" style="background:${k.color}">${esc(k.name.slice(-1))}</span>${esc(k.name)}`;
+    b.onclick=()=>{rec.kid=k.id;renderKids();};
+    box.appendChild(b);
+  });
+}
+function renderSuggest(){
+  const low=[...kids].map(k=>({k,n:kidNotes(k.id).length})).sort((a,b)=>a.n-b.n).slice(0,3);
+  const box=document.getElementById("suggest"); box.innerHTML="<span>今日建議觀察：</span>";
+  low.forEach(({k,n})=>{const b=document.createElement("button");b.type="button";b.textContent=`${k.name}（${n} 條）`;b.onclick=()=>{rec.kid=k.id;renderKids();};box.appendChild(b);});
+}
+function renderDoms(){
+  const box=document.getElementById("doms"); box.innerHTML="";
+  DOMAINS.forEach(d=>{const b=document.createElement("button");b.type="button";b.className="chip dom";b.style.setProperty("--c",cvar(d.id));b.textContent=d.name;b.setAttribute("aria-pressed",rec.dom===d.id);
+    b.onclick=()=>{rec.dom=d.id;rec.tags.clear();renderDoms();renderInds();document.getElementById("photoBtn").style.setProperty("--c",cvar(d.id));};box.appendChild(b);});
+}
+function renderInds(){
+  const box=document.getElementById("inds"); box.innerHTML="";
+  if(!rec.dom){box.innerHTML='<span class="small muted">先選擇學習範疇</span>';return;}
+  DMAP[rec.dom].ind.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="tag dom";b.style.setProperty("--c",cvar(rec.dom));b.textContent=t;b.setAttribute("aria-pressed",rec.tags.has(t));
+    b.onclick=()=>{rec.tags.has(t)?rec.tags.delete(t):rec.tags.add(t);renderInds();};box.appendChild(b);});
+}
+function pubBadge(n,mode){
+  if(n.pub) return '<span class="pub-badge">✓ 已分享給家長</span>';
+  if(mode==="teacher") return `<button class="linkish pub-btn" type="button" data-pub="${n.id}">分享給家長</button>`;
+  return "";
+}
+function noteHTML(n,showKid=true,mode=""){
+  const k=kids.find(x=>x.id===n.kid);
+  const act = mode ? `<div class="note-act">${pubBadge(n,mode)}</div>` : "";
+  return `<div class="note" style="--c:${cvar(n.dom)}"><div class="meta"><span>${fmtDate(n.date)}</span>${showKid?`<b>${esc(k.name)}</b>`:""}<span>${DMAP[n.dom].name}</span>${n.tags.length?`<span>${esc(n.tags.join("、"))}</span>`:""}${n.photo?"<span>📷 相片</span>":""}</div>${esc(n.text)}${act}</div>`;
+}
+function renderRecent(){
+  const list=[...notes].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id)).slice(0,8);
+  document.getElementById("recentFeed").innerHTML=list.map(n=>noteHTML(n,true,role==="teacher"?"teacher":"")).join("");
+}
+const SAMPLE_VOICE={
+  nature:"佢喺自然角用放大鏡睇樹葉，話「啲線好似馬路咁」。",
+  math:"排隊時自己數前面有幾多個同學，數到七。",
+  chinese:"圖書角自己揭書，指住「蜜蜂」兩個字讀出嚟。",
+  physical:"跳彩虹圈雙腳跳得穩，冇踩線。",
+  english:"見到紅色積木會講 red。",
+  arts:"用蠟筆畫咗屋企人，話「最大個係爸爸」。",
+  social:"見到同學跌親，主動行過去問佢痛唔痛。",
+};
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recog=null, listening=false;
+const micBtn=document.getElementById("micBtn"), micLabel=micBtn.querySelector(".miclabel");
+function setMic(on){ listening=on; micBtn.classList.toggle("listening",on); micLabel.textContent=on?"正在聆聽…再按停止":"語音輸入（廣東話）"; }
+function demoFill(msg){ setMic(true); setTimeout(()=>{ document.getElementById("noteText").value=SAMPLE_VOICE[rec.dom||"nature"]; setMic(false); toast(msg); },1200); }
+micBtn.onclick=()=>{
+  if(listening){ if(recog) recog.stop(); return; }
+  if(!SR){ demoFill("此瀏覽器不支援語音輸入，已填入示範句子。請用 Chrome 或 Edge。"); return; }
+  const ta=document.getElementById("noteText"); const base=ta.value?ta.value+" ":""; let finalText="";
+  recog=new SR(); recog.lang="zh-HK"; recog.interimResults=true; recog.continuous=true;
+  recog.onresult=e=>{ let interim=""; for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript; if(e.results[i].isFinal) finalText+=t; else interim+=t; } ta.value=base+finalText+interim; };
+  recog.onerror=e=>{ setMic(false);
+    if(e.error==="not-allowed"||e.error==="service-not-allowed") toast("未能使用麥克風，請在瀏覽器網址列旁允許麥克風權限");
+    else if(e.error==="no-speech") toast("聽不到聲音，請再試一次");
+    else if(e.error==="network") toast("語音服務需要網絡連線，請檢查網絡");
+    else if(e.error!=="aborted") toast("語音辨識出錯："+e.error); };
+  recog.onend=()=>{ setMic(false); if(finalText) toast("已把語音轉為文字，可再修改"); };
+  try{ recog.start(); setMic(true); }catch(err){ setMic(false); demoFill("未能啟動語音輸入，已填入示範句子"); }
+};
+document.getElementById("photoBtn").onclick=e=>{rec.photo=!rec.photo;const b=e.currentTarget;b.classList.toggle("has",rec.photo);b.textContent=rec.photo?"📷 已加入":"＋ 加入相片";};
+document.getElementById("saveBtn").onclick=()=>{
+  const text=document.getElementById("noteText").value.trim();
+  if(!rec.kid){toast("請先選擇幼兒");return;}
+  if(!rec.dom){toast("請選擇學習範疇");return;}
+  if(!text&&!rec.tags.size){toast("請輸入一句觀察或選擇表現");return;}
+  addNote({kid:rec.kid,date:"2026-10-26",dom:rec.dom,tags:[...rec.tags],text:text||"（只剔選表現）",photo:rec.photo});
+  const name=kids.find(k=>k.id===rec.kid).name;
+  rec.tags.clear(); rec.photo=false; document.getElementById("noteText").value="";
+  const pb=document.getElementById("photoBtn"); pb.classList.remove("has"); pb.textContent="＋ 加入相片";
+  renderKids();renderInds();renderRecent();renderSuggest();
+  toast(`已儲存 ${name} 的記錄`);
+};
+
+/* ---------- coverage ---------- */
+function renderCoverage(){
+  const total=notes.length, lowKids=kids.filter(k=>kidNotes(k.id).length<LOW).length;
+  document.getElementById("stats").innerHTML=
+    `<div class="stat"><b>${total}</b><span>本學期記錄</span></div>`+
+    `<div class="stat"><b>${(total/kids.length).toFixed(1)}</b><span>每位幼兒平均</span></div>`+
+    `<div class="stat"><b>${lowKids}</b><span>位幼兒記錄偏少</span></div>`;
+  let h=`<thead><tr><th>幼兒</th><th>記錄數量</th>${DOMAINS.map(d=>`<th title="${d.name}">${d.name.slice(0,2)}</th>`).join("")}<th></th></tr></thead><tbody>`;
+  [...kids].sort((a,b)=>kidNotes(a.id).length-kidNotes(b.id).length).forEach(k=>{
+    const ns=kidNotes(k.id), n=ns.length, low=n<LOW;
+    h+=`<tr><td>${esc(k.name)}</td><td><span class="bar ${low?"low":""}"><i style="width:${Math.min(100,n/8*100)}%"></i></span>${n}</td>`+
+      DOMAINS.map(d=>{const has=ns.some(x=>x.dom===d.id);return `<td><span class="cell" style="${has?`background:${cvar(d.id)};border-color:transparent`:""}" title="${d.name}${has?"：有記錄":"：未有記錄"}"></span></td>`;}).join("")+
+      `<td><button class="linkish" data-kid="${k.id}">查看</button></td></tr>`;
+  });
+  const t=document.getElementById("covTable"); t.innerHTML=h+"</tbody>";
+  t.querySelectorAll("[data-kid]").forEach(b=>b.onclick=()=>{profKid=b.dataset.kid;show("profile");});
+}
+
+/* ---------- radar ---------- */
+function radar(values,max,size=260,labels=true){
+  const cx=size/2, cy=size/2, r=size/2-58, n=values.length;
+  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*r*v/max, cy+Math.sin(a)*r*v/max];};
+  let s=`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="七個學習範疇概覽">`;
+  for(let l=1;l<=max;l++){s+=`<polygon points="${values.map((_,i)=>pt(i,l).join(",")).join(" ")}" fill="none" stroke="var(--line)"/>`;}
+  values.forEach((_,i)=>{const [x,y]=pt(i,max);s+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/>`;});
+  s+=`<polygon points="${values.map((v,i)=>pt(i,v).join(",")).join(" ")}" fill="color-mix(in srgb,var(--brand) 25%,transparent)" stroke="var(--brand)" stroke-width="2"/>`;
+  values.forEach((v,i)=>{const [x,y]=pt(i,v);s+=`<circle cx="${x}" cy="${y}" r="4" fill="${cvar(DOMAINS[i].id)}"/>`;});
+  if(labels) DOMAINS.forEach((d,i)=>{const [x,y]=pt(i,max+0.8);s+=`<text x="${x}" y="${y}" font-size="11.5" text-anchor="middle" dominant-baseline="middle" fill="var(--ink)" font-family="var(--sans)">${d.name}</text>`;});
+  return s+"</svg>";
+}
+
+/* ---------- profile ---------- */
+let profKid="k0";
+function fillSel(sel,val){sel.innerHTML=kids.map(k=>`<option value="${k.id}" ${k.id===val?"selected":""}>${esc(k.name)}</option>`).join("");}
+document.getElementById("profSel").onchange=e=>{profKid=e.target.value;renderProfile();};
+function renderProfile(){
+  fillSel(document.getElementById("profSel"),profKid);
+  const k=kids.find(x=>x.id===profKid), ns=kidNotes(k.id);
+  document.getElementById("profHead").innerHTML=`<span class="av" style="background:${k.color}">${esc(k.name.slice(-1))}</span><div><h2 style="margin:0;font-size:24px">${esc(k.name)}</h2><p class="muted small" style="margin:0">K2A 班　本學期 ${ns.length} 條記錄</p></div>`;
+  document.getElementById("profFeed").innerHTML=ns.length?ns.map(n=>noteHTML(n,false,role==="teacher"?"teacher":"view")).join(""):'<div class="empty">未有記錄，可以在「記錄」頁新增。</div>';
+  const rs=replies.filter(x=>x.kid===k.id);
+  document.getElementById("profReplies").innerHTML = rs.length ? `<h3 style="margin:18px 0 8px">家長回應</h3>`+rs.map(x=>`<div class="reply"><b>${esc(x.task)}</b>　${fmtDate(x.date)}<br>${esc(x.text||"我們在家試過了。")}</div>`).join("") : "";
+  const cnt=DOMAINS.map(d=>ns.filter(n=>n.dom===d.id).length);
+  document.getElementById("profRadar").innerHTML=radar(cnt.map(c=>Math.min(c,3)),3);
+  const art=ns.filter(n=>n.dom==="arts");
+  document.getElementById("profArt").innerHTML=art.length?art.map(n=>{
+    const m=n.text.match(/「([^」]+)」/);
+    return `<div class="art"><div class="canvas" style="background:linear-gradient(135deg,color-mix(in srgb,var(--d-arts) 28%,var(--surface)),color-mix(in srgb,var(--d-physical) 22%,var(--surface)))"><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="30" r="16" fill="none" stroke="var(--ink)" stroke-width="2.5"/><path d="M22 50h20M32 46v4M26 22l-4-8M38 22l4-8" stroke="var(--ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div><p>${m?`<q>${esc(m[1])}</q>`:""}<span class="muted">${fmtDate(n.date)}　${esc(n.tags.join("、"))}</span></p></div>`;}).join(""):'<p class="small muted">本學期未有藝術作品記錄。</p>';
+}
+
+/* ---------- report ---------- */
+let repKid="k0";
+const ratings={};
+function defaultRatings(id){
+  if(id==="k0") return {nature:4,math:4,chinese:2,physical:3,english:3,arts:3,social:3};
+  return Object.fromEntries(DOMAINS.map(d=>[d.id,3]));
+}
+function ensureRatings(id){ if(!ratings[id]) ratings[id]=defaultRatings(id); return ratings[id]; }
+document.getElementById("repSel").onchange=e=>{repKid=e.target.value;renderReportSetup();resetPaper();};
+function renderReportSetup(){
+  fillSel(document.getElementById("repSel"),repKid);
+  const r=ensureRatings(repKid), box=document.getElementById("rateBox"); box.innerHTML="";
+  DOMAINS.forEach(d=>{
+    const lab=document.createElement("span"); lab.textContent=d.name; box.appendChild(lab);
+    const seg=document.createElement("span"); seg.className="seg"; seg.style.setProperty("--c",cvar(d.id));
+    [1,2,3,4].forEach(v=>{const b=document.createElement("button");b.type="button";b.textContent=v;b.setAttribute("aria-pressed",r[d.id]===v);b.setAttribute("aria-label",`${d.name} ${v} 分`);
+      b.onclick=()=>{r[d.id]=v;renderReportSetup();};seg.appendChild(b);});
+    box.appendChild(seg);
+  });
+  // suggestions: strengths = highest rated with notes; weakness = lowest
+  const ns=kidNotes(repKid);
+  const ranked=[...DOMAINS].sort((a,b)=>(r[b.id]-r[a.id])||(ns.filter(n=>n.dom===b.id).length-ns.filter(n=>n.dom===a.id).length));
+  const opts=sel=>DOMAINS.map(d=>`<option value="${d.id}" ${d.id===sel?"selected":""}>${d.name}</option>`).join("");
+  document.getElementById("s1").innerHTML=opts(ranked[0].id);
+  document.getElementById("s2").innerHTML=opts(ranked[1].id);
+  document.getElementById("w1").innerHTML=opts(ranked[ranked.length-1].id);
+  updateEvidence();
+}
+["s1","s2","w1"].forEach(id=>document.getElementById(id).onchange=updateEvidence);
+function updateEvidence(){
+  const ns=kidNotes(repKid);
+  const miss=["s1","s2","w1"].map(id=>document.getElementById(id).value).filter(d=>!ns.some(n=>n.dom===d));
+  document.getElementById("evidenceNote").textContent = miss.length
+    ? `注意：${miss.map(d=>DMAP[d].name).join("、")}未有觀察記錄，系統無法為這部分寫具體事例。`
+    : "系統會引用已有的觀察記錄作為事例。";
+}
+function resetPaper(){
+  document.getElementById("paperWrap").innerHTML='<div class="empty">評分及確認重點後，按「AI 起草報告」。<br>初稿會在這裏出現，你可以直接點擊文字修改。</div>';
+  document.getElementById("signRow").hidden=true;
+}
+
+const TIP_LIBRARY = {
+  chinese:["多感官認字：用手指在沙盤或手心寫出主題字，或用泥膠搓出字形。","親子共讀找字：選含本週主題字詞的圖書，請孩子做「字詞小偵探」找出學過的字。","生活中找字：外出時在招牌、包裝上找認識的字。"],
+  social:["家中安排輪流和分享的小遊戲，事後一起說說感受。","閱讀關於友誼的圖書，問孩子「如果你是他，會點做？」","鼓勵孩子在公園主動邀請小朋友一起玩，並給予具體讚賞。"],
+  math:["日常點數：上樓梯、擺碗筷時一起數。","比較長短輕重：用家中物件玩「邊個長啲」。","砌圖形遊戲：用紙皮剪出不同圖形拼圖。"],
+  nature:["一起種豆或照顧植物，每日觀察並畫低變化。","散步時收集樹葉，比較形狀和顏色。","浴室玩浮沉實驗，猜猜邊樣會浮。"],
+  physical:["公園玩攀爬及平衡遊戲。","在家練習扣鈕、用筷子夾豆。","一起跳繩或拋接球。"],
+  english:["親子唱英文兒歌。","日常用英文說顏色和物件名稱。","睡前讀簡單英文圖書。"],
+  arts:["準備不同材料讓孩子自由創作。","請孩子介紹自己的作品，家長記下他的說法。","一起參觀展覽或欣賞音樂。"],
+};
+
+function fallbackDraft(k,r,s1,s2,w1){
+  const ns=kidNotes(k.id);
+  const level=v=>["","需要支援","尚待提升","表現良好","表現優秀"][v];
+  const ev=d=>ns.filter(n=>n.dom===d).map(n=>n.text).join(" ");
+  return {
+    overall: DOMAINS.map(d=>({domain:d.name,text:`${level(r[d.id])}。`+(ns.find(n=>n.dom===d.id)?`本學期觀察到：${ns.find(n=>n.dom===d.id).tags.join("、")||"積極參與"}。`:"【本範疇未有觀察記錄，請老師補充】")})),
+    strengths:[s1,s2].map(d=>({domain:DMAP[d].name,title:DMAP[d].name,text:ev(d)?`根據老師觀察：${ev(d)}`:"【未有觀察記錄，請老師補充事例】"})),
+    improve:{domain:DMAP[w1].name,text:ev(w1)?`根據老師觀察：${ev(w1)}`:"【未有觀察記錄，請老師補充】",tips:TIP_LIBRARY[w1].slice(0,2)},
+    closing:`感謝家長的支持。${k.name}本學期學習態度積極，我們會繼續與家長合作，支持孩子成長。`
+  };
+}
+
+let sampleFn=null;
+(async()=>{ try{ if(window.claude && typeof window.claude.use==="function"){ sampleFn = await window.claude.use("sample"); } }catch(e){ sampleFn=null; } })();
+
+let ctl=null;
+document.getElementById("stopBtn").onclick=()=>{ if(ctl) ctl.abort(); };
+document.getElementById("draftBtn").onclick=async()=>{
+  const k=kids.find(x=>x.id===repKid), r=ensureRatings(repKid), ns=kidNotes(repKid);
+  const s1=document.getElementById("s1").value, s2=document.getElementById("s2").value, w1=document.getElementById("w1").value;
+  const btn=document.getElementById("draftBtn"), stop=document.getElementById("stopBtn"), status=document.getElementById("draftStatus");
+  btn.disabled=true;
+  document.getElementById("paperWrap").innerHTML='<div class="empty"><div class="thinking" style="justify-content:center"><i></i>系統正在根據記錄起草…</div></div>';
+  let draft=null, source="ai";
+  if(sampleFn){
+    stop.hidden=false; ctl=new AbortController();
+    const prompt=`你是香港幼稚園K2班老師的報告寫作助手。請根據以下老師的評分和觀察記錄，為幼兒撰寫上學期「兒童學習歷程檔案」初稿。
+
+規則：
+- 使用繁體中文書面語，語氣正面、具體、溫和，適合給家長閱讀。幼兒原話可保留廣東話並用「」引述。
+- 只可使用觀察記錄內的事實，不可虛構活動、對話或數字。
+- 若某部分缺乏記錄，或用詞涉及評價幼兒性格、社交、情緒，請把該句或該詞用【】包住，提示老師確認。
+- 稱呼幼兒為「${k.name}」。
+- 家居建議從建議庫中選兩至三項，可稍作改寫。
+
+評分（4優秀 3良好 2尚待提升 1需要支援）：
+${DOMAINS.map(d=>`${d.name}：${r[d.id]}`).join("\n")}
+
+老師確認的重點：表現良好＝${DMAP[s1].name}、${DMAP[s2].name}；尚待提升＝${DMAP[w1].name}
+
+觀察記錄：
+${ns.map(n=>`- ${n.date}｜${DMAP[n.dom].name}｜表現：${n.tags.join("、")||"無"}｜${n.text}`).join("\n")||"（無）"}
+
+建議庫（${DMAP[w1].name}）：
+${TIP_LIBRARY[w1].map(t=>"- "+t).join("\n")}
+
+只回覆JSON，不要其他文字，格式：
+{"overall":[{"domain":"範疇名稱","text":"一至兩句"}...七項,按上面次序],"strengths":[{"domain":"","title":"一句標題","text":"一段約120至180字"},{"domain":"","title":"","text":""}],"improve":{"domain":"","title":"一句標題","text":"一段約100至150字","tips":["建議一","建議二"]},"closing":"一段約80至120字"}`;
+    try{ draft = await sampleFn.json(prompt,{signal:ctl.signal,modelTier:"default"}); }
+    catch(e){
+      if(e && e.code==="cancelled"){ status.textContent="已停止起草。"; btn.disabled=false; stop.hidden=true; resetPaper(); return; }
+      draft=null;
+    }
+    stop.hidden=true;
+  }
+  if(!draft || !draft.overall){ draft=fallbackDraft(k,r,s1,s2,w1); source="fallback"; }
+  renderPaper(k,r,draft);
+  status.textContent = source==="ai" ? "初稿已完成。黃色標示的位置請老師確認，可直接點擊文字修改。" : "未能連接AI，現顯示以記錄拼合的簡單示範稿。在 Claude 內開啟此頁並允許使用 Claude，即可體驗真正的AI起草。";
+  btn.disabled=false;
+};
+
+function flagify(s){ return esc(s).replace(/【([^】]*)】/g,'<mark class="flag">$1</mark>'); }
+function renderPaper(k,r,d){
+  const ns=kidNotes(k.id);
+  const photoNote=dom=>ns.some(n=>n.dom===dom&&n.photo)?'<p class="small muted" style="font-family:var(--sans)">📷 已附相片（系統已自動遮蓋其他幼兒面孔）</p>':"";
+  const domId=name=>(DOMAINS.find(x=>x.name===name)||{}).id;
+  let h=`<div class="paper">
+    <p class="title">上學期兒童學習歷程檔案</p>
+    <p class="sub">2026/2027 學年　姓名：${esc(k.name)}　班別：K2A</p>
+    <div class="radar-wrap">${radar(DOMAINS.map(x=>r[x.id]),4,280)}</div>
+    <h4>一、各個學習範疇的整體發展狀況</h4>
+    ${(d.overall||[]).map(o=>`<p contenteditable="true"><b>${esc(o.domain)}：</b>${flagify(o.text)}</p>`).join("")}
+    <h4>二、表現良好的範疇</h4>
+    ${(d.strengths||[]).map((s,i)=>`<h5>${i+1}. ${esc(s.domain)}${s.title&&s.title!==s.domain?"："+esc(s.title):""}</h5>${photoNote(domId(s.domain))}<p contenteditable="true">${flagify(s.text)}</p>`).join("")}
+    <h4>三、尚待提升的項目和家庭支援建議</h4>
+    <h5>${esc(d.improve.domain)}${d.improve.title?"："+esc(d.improve.title):""}</h5>${photoNote(domId(d.improve.domain))}
+    <p contenteditable="true">${flagify(d.improve.text)}</p>
+    <p><b>建議家長在家嘗試：</b></p>
+    <ol>${(d.improve.tips||[]).map(t=>`<li contenteditable="true">${flagify(t)}</li>`).join("")}</ol>
+    <h4>四、結語</h4>
+    <p contenteditable="true">${flagify(d.closing)}</p>
+    <h4>五、考勤紀錄</h4>
+    <p>上課日：${k.id==="k0"?"38":"38"} 日　缺席：${k.id==="k0"?"3":"1"} 日　遲到：${k.id==="k0"?"1":"0"} 日（截至 10 月 26 日，由考勤系統讀取）</p>
+  </div>`;
+  document.getElementById("paperWrap").innerHTML=h;
+  const flags=document.querySelectorAll("#paperWrap mark.flag").length;
+  document.getElementById("flagCount").textContent = flags?`尚有 ${flags} 處待確認`:"沒有待確認的位置";
+  document.getElementById("signRow").hidden=false;
+}
+document.getElementById("signBtn").onclick=()=>{
+  const flags=document.querySelectorAll("#paperWrap mark.flag");
+  if(flags.length){ flags[0].scrollIntoView({behavior:"smooth",block:"center"}); toast(`尚有 ${flags.length} 處待確認，請先處理`); 
+    flags.forEach(f=>{ f.addEventListener("click",()=>{ const t=document.createTextNode(f.textContent); f.replaceWith(t); const left=document.querySelectorAll("#paperWrap mark.flag").length; document.getElementById("flagCount").textContent=left?`尚有 ${left} 處待確認`:"沒有待確認的位置"; },{once:true}); });
+    document.getElementById("flagCount").textContent += "（點擊黃色文字即表示已確認）";
+    return; }
+  const clone=document.querySelector("#paperWrap .paper").cloneNode(true);
+  clone.querySelectorAll("[contenteditable]").forEach(e=>e.removeAttribute("contenteditable"));
+  signedReports[repKid]=clone.outerHTML;
+  const kn=kids.find(x=>x.id===repKid).name;
+  toast(`已簽發 ${kn} 的報告，家長可在家長版查看`);
+  document.getElementById("flagCount").textContent="已簽發";
+};
+
+
+/* ---------- shared state ---------- */
+const signedReports={};
+const replies=[];
+const PARENT_KID="k0";
+const PUB_PRESET={
+ nature:"在中秋節的科學活動中，子朗仔細觀察柚子的果肉、果皮和果核，還親手做浮沉實驗。發現果皮浮起時，他興奮地說：「果皮會浮，好似船啊！」",
+ math:"子朗用積木量度鉛筆和橡皮擦的長度，排列整齊、沒有空隙，還能比較出鉛筆較長：「呢個長啲。」",
+ arts:"子朗用水彩畫了一個兔仔燈籠，並向老師介紹：「呢個係兔仔燈籠，佢識飛去月光度。」",
+};
+notes.filter(n=>n.kid===PARENT_KID && PUB_PRESET[n.dom]).forEach(n=>{ n.pub=true; n.pubText=PUB_PRESET[n.dom]; });
+
+/* ---------- publish modal ---------- */
+let pubNote=null;
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-pub]"); if(b) openPub(b.dataset.pub); });
+function openPub(id){
+  pubNote=notes.find(n=>n.id===id); if(!pubNote) return;
+  document.getElementById("pubText").value=pubNote.pubText||pubNote.text;
+  document.getElementById("pubStatus").textContent="";
+  document.getElementById("pubModal").hidden=false;
+  document.getElementById("pubText").focus();
+}
+function closePub(){ document.getElementById("pubModal").hidden=true; pubNote=null; }
+document.getElementById("pubCancel").onclick=closePub;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !document.getElementById("pubModal").hidden) closePub(); });
+document.getElementById("pubAI").onclick=async()=>{
+  const st=document.getElementById("pubStatus"), ta=document.getElementById("pubText"), btn=document.getElementById("pubAI");
+  if(!sampleFn){ st.textContent="未能連接AI（只在 Claude 內開啟時可用），請自行修改文字。"; return; }
+  btn.disabled=true; st.textContent="AI 改寫中…";
+  const k=kids.find(x=>x.id===pubNote.kid);
+  try{
+    const r=await sampleFn.json(`把以下香港幼稚園老師的觀察記錄，改寫成給家長看的一至兩句繁體中文書面語。語氣溫暖具體，稱呼幼兒為「${k.name.slice(1)}」，幼兒原話保留廣東話並用「」引述。不可加入記錄以外的內容，不作任何評價或比較。只回覆JSON：{"text":"改寫後的文字"}\n記錄：${pubNote.text}`,{modelTier:"quick"});
+    if(r && r.text){ ta.value=r.text; st.textContent="已改寫，請檢查後才分享。"; } else st.textContent="未能改寫，請自行修改。";
+  }catch(err){ st.textContent="未能改寫，請自行修改。"; }
+  btn.disabled=false;
+};
+document.getElementById("pubOk").onclick=()=>{
+  const t=document.getElementById("pubText").value.trim(); if(!t){ toast("請輸入要分享的文字"); return; }
+  pubNote.pub=true; pubNote.pubText=t;
+  const kn=kids.find(x=>x.id===pubNote.kid).name; closePub();
+  renderRecent(); if(!document.getElementById("v-profile").hidden) renderProfile();
+  toast(`已分享給 ${kn} 的家長`);
+};
+
+/* ---------- parent views ---------- */
+function parentHero(){
+  const k=kids.find(x=>x.id===PARENT_KID), n=kidNotes(k.id).filter(x=>x.pub).length;
+  return `<span class="av" style="background:${k.color}">${esc(k.name.slice(-1))}</span><div><h3>${esc(k.name)}</h3><p class="small muted" style="margin:0">K2A 班　班主任：陳老師　本學期老師分享了 ${n} 個成長片段</p></div>`;
+}
+function renderPFeed(){
+  document.getElementById("pHero").innerHTML=parentHero();
+  const pubs=kidNotes(PARENT_KID).filter(n=>n.pub);
+  const box=document.getElementById("pFeed");
+  box.innerHTML = pubs.length ? pubs.map(n=>`<article class="moment" style="--c:${cvar(n.dom)}">
+    ${n.photo?`<div class="ph">📷 活動相片（其他幼兒面孔已自動遮蓋）</div>`:""}
+    <div class="bd"><div class="meta"><span class="chip dom" style="--c:${cvar(n.dom)};padding:2px 10px;font-size:12.5px">${DMAP[n.dom].name}</span><span>${fmtDate(n.date)}</span><span>陳老師分享</span></div>
+    <p>${esc(n.pubText||n.text)}</p>
+    <button class="btn sm thanks" type="button" data-thanks="${n.id}" aria-pressed="${!!n.thanked}">${n.thanked?"❤ 已多謝老師":"♡ 多謝老師"}</button></div></article>`).join("")
+    : '<div class="empty">老師暫未分享成長片段。</div>';
+  box.querySelectorAll("[data-thanks]").forEach(b=>b.onclick=()=>{ const n=notes.find(x=>x.id===b.dataset.thanks); n.thanked=!n.thanked; renderPFeed(); if(n.thanked) toast("已通知陳老師"); });
+}
+function renderPReport(){
+  const box=document.getElementById("pReport");
+  if(signedReports[PARENT_KID]){ box.innerHTML=signedReports[PARENT_KID]; return; }
+  box.innerHTML=`<div class="kid-hero">${parentHero()}</div><div class="empty">上學期報告將於 2027 年 1 月由老師簽發後發佈。<br><br><span class="small">示範提示：可先切換為「老師」，在「學期報告」為黃子朗起草並簽發，再切換回「家長」查看。</span></div>`;
+}
+const PARENT_TASKS=[
+ {id:"t1",dom:"chinese",tip:0},
+ {id:"t2",dom:"chinese",tip:1},
+ {id:"t3",dom:"nature",tip:2},
+];
+function renderPHome(){
+  const box=document.getElementById("pHome");
+  box.innerHTML=`<div class="kid-hero">${parentHero()}</div>`+PARENT_TASKS.map(t=>{
+    const raw=TIP_LIBRARY[t.dom][t.tip], i=raw.indexOf("："), title=i>0?raw.slice(0,i):DMAP[t.dom].name, body=i>0?raw.slice(i+1):raw;
+    const done=replies.find(r=>r.taskId===t.id);
+    return `<div class="task" style="--c:${cvar(t.dom)}"><span class="small muted">${DMAP[t.dom].name}</span><h4>${esc(title)}</h4><p>${esc(body)}</p>
+      ${done?`<div class="reply">✓ 已告訴老師：${esc(done.text||"我們在家試過了。")}</div>`:
+      `<div data-form="${t.id}"><textarea placeholder="可選：分享在家的情況，例如孩子說了甚麼" style="min-height:64px"></textarea><div class="row" style="margin-top:8px;justify-content:flex-end"><button class="btn primary sm" type="button" data-done="${t.id}" data-title="${esc(title)}">我們試過了，告訴老師</button></div></div>`}</div>`;
+  }).join("");
+  box.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{
+    const f=box.querySelector(`[data-form="${b.dataset.done}"] textarea`);
+    replies.push({kid:PARENT_KID,taskId:b.dataset.done,task:b.dataset.title,text:f.value.trim(),date:"2026-10-26"});
+    renderPHome(); toast("已告訴陳老師，老師可在幼兒檔案看到");
+  });
+}
+
+/* ---------- principal dashboard ---------- */
+const CLASSES=[
+ {cls:"K1A",t:"何老師",kids:20,rec:96,low:3,read:72,shared:21},
+ {cls:"K1B",t:"張老師",kids:21,rec:88,low:5,read:65,shared:15},
+ {cls:"K2A",t:"陳老師",live:true},
+ {cls:"K2B",t:"黃老師",kids:23,rec:131,low:2,read:80,shared:34},
+ {cls:"K3A",t:"林老師",kids:25,rec:160,low:1,read:85,shared:41},
+ {cls:"K3B",t:"吳老師",kids:24,rec:102,low:6,read:61,shared:18},
+];
+const SCHOOL_BASE={nature:118,math:104,chinese:92,physical:97,english:76,arts:49,social:83};
+function classData(){
+  return CLASSES.map(c=> c.live ? {...c,kids:kids.length,rec:notes.length,low:kids.filter(k=>kidNotes(k.id).length<LOW).length,read:78,shared:notes.filter(n=>n.pub).length} : c);
+}
+function renderDash(){
+  const cs=classData();
+  const tk=cs.reduce((a,c)=>a+c.kids,0), tr=cs.reduce((a,c)=>a+c.rec,0), tl=cs.reduce((a,c)=>a+c.low,0);
+  const read=Math.round(cs.reduce((a,c)=>a+c.read*c.kids,0)/tk), shared=cs.reduce((a,c)=>a+c.shared,0);
+  document.getElementById("dStats").innerHTML=
+    `<div class="stat"><b>${tk}</b><span>全校幼兒</span></div>`+
+    `<div class="stat"><b>${tr}</b><span>本學期觀察記錄</span></div>`+
+    `<div class="stat"><b>${Math.round((tk-tl)/tk*100)}%</b><span>幼兒已有足夠記錄</span></div>`+
+    `<div class="stat"><b>${read}%</b><span>家長閱讀率</span></div>`;
+  let t=`<thead><tr><th>班別</th><th>班主任</th><th>幼兒</th><th>記錄</th><th>平均每人</th><th>記錄偏少</th><th>已分享給家長</th><th>家長閱讀率</th><th>報告簽發</th></tr></thead><tbody>`;
+  cs.forEach(c=>{
+    const signed=c.live?Object.keys(signedReports).length:0;
+    t+=`<tr class="${c.live?"row-link":""}" ${c.live?'data-cls="K2A" tabindex="0"':""}><td><b>${c.cls}</b>${c.live?' <span class="small muted">→ 查看</span>':""}</td><td>${c.t}</td><td>${c.kids}</td><td>${c.rec}</td><td>${(c.rec/c.kids).toFixed(1)}</td><td>${c.low} 位${c.low>=5?'<span class="flag-chip">需跟進</span>':""}</td><td>${c.shared}</td><td>${c.read}%</td><td>${signed} / ${c.kids}</td></tr>`;
+  });
+  const tb=document.getElementById("dClasses"); tb.innerHTML=t+"</tbody>";
+  tb.querySelectorAll("[data-cls]").forEach(r=>{ r.onclick=()=>show("coverage"); r.onkeydown=e=>{ if(e.key==="Enter") show("coverage"); }; });
+  const dc=DOMAINS.map(d=>({d,n:SCHOOL_BASE[d.id]+notes.filter(x=>x.dom===d.id).length}));
+  const max=Math.max(...dc.map(x=>x.n));
+  document.getElementById("dDomains").innerHTML=dc.map(x=>`<div class="hbar"><span>${x.d.name}</span><span class="t"><i style="width:${x.n/max*100}%;background:${cvar(x.d.id)}"></i></span><span>${x.n}</span></div>`).join("");
+  const low=dc.reduce((a,b)=>b.n<a.n?b:a);
+  document.getElementById("dDomainNote").innerHTML=`<span class="flag-chip" style="margin:0 6px 0 0">提示</span>「${low.d.name}」的記錄最少，可提醒老師下月多加觀察。`;
+  const replyN=replies.length+37;
+  document.getElementById("dEvidence").innerHTML=[
+    ["學與教",[`全校 ${tr} 條觀察記錄，平均每位幼兒 ${(tr/tk).toFixed(1)} 條`,"學期報告的事例全部來自日常觀察記錄"]],
+    ["對兒童的支援",[`${tl} 位幼兒記錄偏少，系統已提示老師優先觀察`,"每份報告均附針對性的家居建議"]],
+    ["兒童發展",["七個學習範疇均有記錄，可按班別及學期比較進展",`「${low.d.name}」為下階段關注重點`]],
+    ["家校合作",[`老師本學期分享 ${shared} 個成長片段，家長閱讀率 ${read}%`,`家長回應在家小任務 ${replyN} 次`]],
+  ].map(([h,li])=>`<div class="ev"><h4>${h}</h4><ul>${li.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+}
+document.getElementById("exportBtn").onclick=()=>toast("示範：正式版可匯出為學校報告「自我評估」部分的附件");
+
+/* ---------- roadmap ---------- */
+function renderRoadmap(){
+  const S=[
+   {h:"第一階段　試點",when:"2027 年上半年",st:"示範中",c:"var(--d-nature)",items:[
+     ["老師記錄及語音輸入","十秒完成一條觀察記錄，系統提示記錄偏少的幼兒。"],
+     ["AI 起草學期報告","按學校格式起草，老師修改及簽發。"],
+     ["校長學校概覽","全校情況及學校自評證據，減少文書工作。"],
+     ["家長成長點滴","老師揀選片段分享，家長只看到自己子女。"]]},
+   {h:"第二階段　加值模組",when:"試點成功後",st:"規劃中",c:"var(--d-physical)",items:[
+     ["動一動","與註冊物理治療師設計每日 5 至 10 分鐘的班本體能活動，記錄全班參與，連接「體能與健康」範疇。"],
+     ["畫一畫","與藝術治療師設計情感表達活動，只記錄作品及幼兒自述，系統不分析畫作。"],
+     ["專業服務","合作治療師到校課程，以及老師提出關注後的轉介機制。"]]},
+   {h:"第三階段　擴展",when:"之後",st:"構想",c:"var(--d-english)",items:[
+     ["辦學團體總覽","跨校匯總數字，不顯示個別幼兒資料。"],
+     ["手機 App","老師版及家長版上架 App Store 及 Google Play。"],
+     ["小學版","按小學課程及評估要求調整，延續幼兒的成長記錄。"]]},
+  ];
+  document.getElementById("roadmapBody").innerHTML=S.map(s=>`<div class="stage-h"><h3>${s.h}</h3><span class="small muted">${s.when}</span><span class="st">${s.st}</span></div><div class="stage">${s.items.map(([t,d])=>`<div class="rm" style="--c:${s.c}"><h4>${t}</h4><p>${d}</p></div>`).join("")}</div>`).join("");
+}
+
+/* ---------- guided tour ---------- */
+const TOUR=[
+ {sel:null,title:"歡迎使用童跡",text:"這個示範原型展示老師如何用十秒記錄幼兒表現，期末一按便生成學期報告初稿。所有資料均為虛構，請放心試用。"},
+ {sel:"#suggest",title:"今日建議觀察",text:"系統會提示記錄最少的幼兒，確保每位幼兒都有足夠觀察。點擊名字即可選取。"},
+ {sel:"#kids",title:"第一步：選擇幼兒",text:"點擊幼兒卡片。右上角數字是本學期的記錄數量，橙色代表偏少。"},
+ {sel:"#doms",title:"第二步：選擇學習範疇",text:"七個範疇對應香港幼稚園課程，每個範疇有自己的顏色。選好後可再剔選觀察到的表現。"},
+ {sel:"#micBtn",title:"第三步：講一句",text:"按「語音輸入」後直接用廣東話講，系統即時轉成文字，講完再按一次停止。亦可以自己打字。"},
+ {sel:"#saveBtn",title:"第四步：儲存",text:"按儲存，記錄便會出現在右邊的「最近記錄」，幼兒的記錄數量亦會更新。"},
+ {sel:'.nav button[data-view="coverage"]',title:"全班概覽",text:"查看每位幼兒的記錄數量和範疇覆蓋，記錄偏少的排在最前，期末不會「冇料寫」。"},
+ {sel:'.nav button[data-view="profile"]',title:"幼兒檔案",text:"個別幼兒的學習歷程、範疇分佈，以及藝術作品和幼兒自己的說法。"},
+ {sel:'.nav button[data-view="report"]',title:"學期報告",text:"老師評分後按「AI 起草報告」生成初稿。可直接點擊文字修改，黃色標示的位置要老師確認後才可簽發。"},
+ {sel:null,title:"開始試用",text:"建議先揀「黃子朗」，按次序試四個畫面。之後可隨時按頂部的「使用導覽」再看一次。"}
+];
+let tourI=-1, tourEls=null;
+function tourBuild(){
+  const block=document.createElement("div"); block.className="tour-block";
+  const ring=document.createElement("div"); ring.className="tour-ring";
+  const card=document.createElement("div"); card.className="tour-card"; card.setAttribute("role","dialog"); card.setAttribute("aria-modal","true"); card.tabIndex=-1;
+  card.innerHTML='<h4></h4><p></p><div class="tour-foot"><span class="step"></span><button class="btn" data-t="skip" type="button">略過</button><button class="btn" data-t="prev" type="button">上一步</button><button class="btn primary" data-t="next" type="button">下一步</button></div>';
+  card.querySelector('[data-t="skip"]').onclick=tourEnd;
+  card.querySelector('[data-t="prev"]').onclick=()=>tourGo(tourI-1);
+  card.querySelector('[data-t="next"]').onclick=()=>tourI>=TOUR.length-1?tourEnd():tourGo(tourI+1);
+  document.body.append(block,ring,card); tourEls={block,ring,card};
+}
+function tourPlace(){
+  if(!tourEls||tourI<0) return;
+  const s=TOUR[tourI], {ring,card}=tourEls, vw=window.innerWidth, vh=window.innerHeight;
+  const el=s.sel?document.querySelector(s.sel):null;
+  const cw=card.offsetWidth, ch=card.offsetHeight;
+  if(!el||el.offsetParent===null&&getComputedStyle(el).position!=="fixed"){
+    ring.className="tour-ring center"; Object.assign(ring.style,{left:vw/2+"px",top:vh/2+"px",width:"0px",height:"0px"});
+    Object.assign(card.style,{left:Math.max(12,(vw-cw)/2)+"px",top:Math.max(12,(vh-ch)/2)+"px"}); return;
+  }
+  const r=el.getBoundingClientRect(), pad=6;
+  ring.className="tour-ring"; Object.assign(ring.style,{left:(r.left-pad)+"px",top:(r.top-pad)+"px",width:(r.width+pad*2)+"px",height:(r.height+pad*2)+"px"});
+  let top = (vh-r.bottom>ch+24) ? r.bottom+16 : (r.top>ch+24 ? r.top-ch-16 : Math.max(12,vh-ch-12));
+  let left = (r.width<vw*0.5 && r.right+cw+24<vw && vh-r.bottom<=ch+24 && r.top<=ch+24) ? r.right+16 : Math.min(Math.max(12,r.left),vw-cw-12);
+  Object.assign(card.style,{left:left+"px",top:top+"px"});
+}
+function tourGo(i){
+  if(i<0||i>=TOUR.length) return; tourI=i; const s=TOUR[i], {card}=tourEls;
+  card.querySelector("h4").textContent=s.title; card.querySelector("p").textContent=s.text;
+  card.querySelector(".step").textContent=`${i+1} / ${TOUR.length}`;
+  card.querySelector('[data-t="prev"]').hidden=i===0;
+  card.querySelector('[data-t="skip"]').hidden=i===TOUR.length-1;
+  card.querySelector('[data-t="next"]').textContent=i===TOUR.length-1?"開始試用":"下一步";
+  const el=s.sel?document.querySelector(s.sel):null;
+  if(el && !el.closest(".side")) el.scrollIntoView({block:"center",behavior:"instant"});
+  requestAnimationFrame(()=>{ tourPlace(); card.querySelector('[data-t="next"]').focus(); });
+}
+function tourStart(){ show("record"); if(!tourEls) tourBuild(); tourGo(0); }
+function tourEnd(){ if(tourEls){ Object.values(tourEls).forEach(e=>e.remove()); tourEls=null; } tourI=-1; try{ localStorage.setItem("tongji-tour-done","1"); }catch(e){} }
+window.addEventListener("resize",tourPlace); window.addEventListener("scroll",tourPlace,true);
+document.addEventListener("keydown",e=>{ if(!tourEls) return; if(e.key==="Escape") tourEnd(); if(e.key==="ArrowRight") tourGo(tourI+1); if(e.key==="ArrowLeft") tourGo(tourI-1); });
+document.getElementById("tourBtn").onclick=tourStart;
+
+/* init */
+renderSuggest();renderKids();renderDoms();renderInds();renderRecent();
+document.querySelector('.role[data-role="teacher"]').focus();
+</script>
+</body>
+</html>
